@@ -16,9 +16,9 @@ app.use(bodyParser.json());
 //     AuthService.about(req, res);
 // });
 //
-// app.get('/getallusers', (req, res) => {
-//     UserService.getAllUsers(req, res);
-// });
+ app.get('/getallusers', (req, res) => {
+     UserService.getAllUsers(req, res);
+ });
 
  app.get('/getallusers', (req, res) => {
      res.json("XDDD");
