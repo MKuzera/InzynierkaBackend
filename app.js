@@ -5,7 +5,12 @@ const UserService = require('./services/UserService');
 const AuthService = require('./services/AuthService');
 
 const app = express();
+
 app.use(bodyParser.json());
+
+app.get('/getallusers', AuthService.verifyToken, AuthService.isAdmin, (req, res) => {
+    UserService.getAllUsers(req, res);
+});
 
 app.post('/adduser', AuthService.verifyToken, AuthService.isAdmin, (req, res) => {
     UserService.addUser(req, res);
@@ -19,8 +24,12 @@ app.delete('/deleteuser/:id', AuthService.verifyToken, AuthService.isAdmin, (req
     UserService.deleteUser(req, res);
 });
 
-app.get('/getallusers', AuthService.verifyToken, AuthService.isAdmin, (req, res) => {
-    UserService.getAllUsers(req, res);
+app.get('/getuser/:id', AuthService.verifyToken, (req, res) => {
+    UserService.getUser(req, res);
+});
+
+app.post('/login', (req, res) => {
+    AuthService.login(req, res);
 });
 
 const PORT = process.env.PORT || 3000;
