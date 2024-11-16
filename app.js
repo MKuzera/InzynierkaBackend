@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const UserService = require('./services/UserService');
+const AuthService = require('./services/AuthService');
 
 const app = express();
 
@@ -26,7 +27,9 @@ app.delete('/deleteuser/:id', (req, res) => {
 app.get('/getuser/:id', (req, res) => {
     UserService.getUser(req, res);
 });
-
+app.post('/login', (req, res) => {
+    AuthService.login(req, res);
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
