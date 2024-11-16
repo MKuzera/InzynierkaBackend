@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
-// const AuthService = require('./services/AuthService');
-// const UserService = require('./services/UserService');
+//const AuthService = require('./services/AuthService');
+const UserService = require('./services/UserService');
 //
  const app = express();
 //
