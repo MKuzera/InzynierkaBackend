@@ -1,25 +1,23 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
-const DatabaseService = require('./DatabaseService');
-const LoginService = require('./LoginService');
+const AuthService = require('./services/AuthService');
+const UserService = require('./services/UserService');
 
 const app = express();
-const dbService = new DatabaseService();
 
 app.use(bodyParser.json());
-app.use('/api', LoginService);
+
+app.post('/api/login', (req, res) => {
+    AuthService.login(req, res);
+});
+
+app.get('/api/about', (req, res) => {
+    AuthService.about(req, res);
+});
 
 app.get('/getallusers', (req, res) => {
-    const query = 'SELECT * FROM users';
-    const db = dbService.getConnection();
-
-    db.query(query, (err, results) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error fetching users' });
-        }
-        res.json(results);
-    });
+    UserService.getAllUsers(req, res);
 });
 
 const PORT = process.env.PORT || 3000;
