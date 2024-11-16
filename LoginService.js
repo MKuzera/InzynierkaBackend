@@ -41,7 +41,9 @@ router.post('/login', (req, res) => {
         });
     });
 });
+
 router.get('/about', (req, res) => {
-    res.send('About birds')
-})
+    res.send('About birds');
+});
+
 module.exports = router;
