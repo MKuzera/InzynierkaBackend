@@ -20,7 +20,7 @@ app.use(bodyParser.json());
      UserService.getAllUsers(req, res);
  });
 
- app.get('/getallusers', (req, res) => {
+ app.get('/getallusers2', (req, res) => {
      res.json("XDDD");
  });
 
