@@ -18,7 +18,7 @@ class AuthService {
 
         db.query(query, [login, password], (err, results) => {
             if (err) {
-                return res.status(500).json({ message: 'Internal server error' });
+                return res.status(500).json({ message: 'Internal server error' + err });
             }
 
             if (results.length === 0) {
