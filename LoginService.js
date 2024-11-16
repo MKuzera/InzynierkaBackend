@@ -1,16 +1,31 @@
 const jwt = require('jsonwebtoken');
 const express = require('express');
-const app = express();
 const bodyParser = require('body-parser');
+const DatabaseService = require('./DatabaseService');
+
+const app = express();
+const dbService = new DatabaseService();
 
 app.use(bodyParser.json());
 
-const DatabaseService = require('./DatabaseService');
-const dbService = new DatabaseService();
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+        return res.status(401).json({ message: 'Authorization header missing' });
+    }
+
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid token' });
+        }
+        req.user = user;
+        next();
+    });
+};
+
 app.post('/login', (req, res) => {
     const authHeader = req.headers['authorization'];
-    const db = dbService.getConnection();
-
     if (!authHeader) {
         return res.status(401).json({ message: 'Authorization header missing' });
     }
@@ -20,9 +35,10 @@ app.post('/login', (req, res) => {
         .split(':');
 
     const query = 'SELECT id, userType FROM users WHERE login = ? AND password = ?';
+    const db = dbService.getConnection();
+
     db.query(query, [login, password], (err, results) => {
         if (err) {
-            console.error('Error querying database:', err);
             return res.status(500).json({ message: 'Internal server error' });
         }
 
@@ -46,15 +62,14 @@ app.post('/login', (req, res) => {
     });
 });
 
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) return res.sendStatus(401);
-
-    const token = authHeader.split(' ')[1];
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
+app.get('/protected', authenticateToken, (req, res) => {
+    res.json({
+        message: 'You have access to protected data!',
+        user: req.user,
     });
-};
+});
 
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
