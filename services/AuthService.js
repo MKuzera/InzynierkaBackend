@@ -26,6 +26,8 @@ class AuthService {
             }
 
             const user = results[0];
+
+            return res.status(403).json({user : user.id});
             const token = jwt.sign(
                 { userId: user.id, userType: user.type }, // Zmieniono 'userType' na 'type' zgodnie z tabelą
                 process.env.JWT_SECRET,
