@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const UserService = require('./services/UserService');
 const AuthService = require('./services/AuthService');
-
+const ConferenceService = require('./services/ConferencesService');
 const app = express();
 
 app.use(bodyParser.json());
@@ -31,6 +31,27 @@ app.get('/getuser/:id', AuthService.verifyToken, (req, res) => {
 app.post('/login', (req, res) => {
     AuthService.login(req, res);
 });
+
+app.get('/conferences', AuthService.verifyToken, (req, res) => {
+    ConferenceService.getAllConferences(req, res);
+});
+
+app.post('/conferences', AuthService.verifyToken, (req, res) => {
+    ConferenceService.addConference(req, res);
+});
+
+app.put('/conferences/:id', AuthService.verifyToken, (req, res) => {
+    ConferenceService.editConference(req, res);
+});
+
+app.delete('/conferences/:id', AuthService.verifyToken, (req, res) => {
+    ConferenceService.deleteConference(req, res);
+});
+
+app.get('/conferences/:id', AuthService.verifyToken, (req, res) => {
+    ConferenceService.getConference(req, res);
+});
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
