@@ -4,9 +4,9 @@ require('dotenv').config();
 // const AuthService = require('./services/AuthService');
 // const UserService = require('./services/UserService');
 //
-// const app = express();
+ const app = express();
 //
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 //
 // app.post('/api/login', (req, res) => {
 //     AuthService.login(req, res);
@@ -19,6 +19,10 @@ require('dotenv').config();
 // app.get('/getallusers', (req, res) => {
 //     UserService.getAllUsers(req, res);
 // });
+
+ app.get('/getallusers', (req, res) => {
+     res.json("XDDD");
+ });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
