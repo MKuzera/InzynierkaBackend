@@ -64,13 +64,13 @@ class AuthService {
         return res.status(403).json({ message: 'Forbidden: You do not have permission to perform this action' });
     }
     static isCreator(req, res, next) {
-        if (req.userType !== 'creator' && req.userType !== 'admin') {
+        if (req.user.userType !== 'creator' && req.user.userType !== 'admin') {
             return res.status(403).json({ message: 'Forbidden: You do not have permission to perform this action' });
         }
         next();
     }
     static isCreatorOrAdmin(req, res, next) {
-        if (req.userType !== 'creator' && req.userType !== 'admin') {
+        if (req.user.userType !== 'creator' && req.user.userType !== 'admin') {
             return res.status(403).json({ message: 'Forbidden: You do not have permission to perform this action' });
         }
         next();
