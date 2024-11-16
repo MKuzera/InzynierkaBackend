@@ -57,6 +57,13 @@ class AuthService {
         });
     }
 
+    static isAdmin(req, res, next) {
+        if (req.user && req.user.userType === 'admin') {
+            return next();
+        }
+        return res.status(403).json({ message: 'Forbidden: You do not have permission to perform this action' });
+    }
+
     static about(req, res) {
         res.send('About birds');
     }
