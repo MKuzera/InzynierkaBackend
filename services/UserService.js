@@ -2,6 +2,14 @@ const DatabaseService = require('./DataBaseService');
 const dbService = new DatabaseService();
 
 class UserService {
+    static validateUserType(type) {
+        const validTypes = ['admin', 'creator', 'user'];
+        if (!validTypes.includes(type)) {
+            return false;
+        }
+        return true;
+    }
+
     static getAllUsers(req, res) {
         const query = 'SELECT * FROM users';
         const db = dbService.getConnection();
@@ -16,6 +24,11 @@ class UserService {
 
     static addUser(req, res) {
         const { username, password, email, type } = req.body;
+
+        if (!this.validateUserType(type)) {
+            return res.status(400).json({ message: 'Invalid user type. Allowed values: admin, creator, user' });
+        }
+
         const query = 'INSERT INTO users (username, password, email, type) VALUES (?, ?, ?, ?)';
         const db = dbService.getConnection();
 
@@ -30,6 +43,10 @@ class UserService {
     static editUser(req, res) {
         const userId = req.params.id;
         const { username, password, email, type } = req.body;
+
+        if (!this.validateUserType(type)) {
+            return res.status(400).json({ message: 'Invalid user type. Allowed values: admin, creator, user' });
+        }
 
         const query = 'UPDATE users SET username = ?, password = ?, email = ?, type = ? WHERE id = ?';
         const db = dbService.getConnection();
