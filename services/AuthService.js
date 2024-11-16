@@ -26,17 +26,15 @@ class AuthService {
             }
 
             const user = results[0];
-
-            return res.status(403).json({user : user.id});
             const token = jwt.sign(
-                { userId: user.id, userType: user.type }, // Zmieniono 'userType' na 'type' zgodnie z tabelą
+                { userId: user.id, userType: user.type },
                 process.env.JWT_SECRET,
                 { expiresIn: '1h' }
             );
 
             return res.status(200).json({
                 message: 'Login successful',
-                userType: user.type, // Zmieniono 'userType' na 'type'
+                userType: user.type,
                 token: token,
             });
         });
