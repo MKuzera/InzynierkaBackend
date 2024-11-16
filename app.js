@@ -7,7 +7,31 @@ const ConferenceService = require('./services/ConferencesService');
 const app = express();
 
 app.use(bodyParser.json());
+const DocumentService = require('./services/DocumentService');
 
+app.get('/documents', AuthService.verifyToken, (req, res) => {
+    DocumentService.getAllDocuments(req, res);
+});
+
+app.get('/documents/:id', AuthService.verifyToken, (req, res) => {
+    DocumentService.getDocument(req, res);
+});
+
+app.get('/documents/author/:authorId', AuthService.verifyToken, (req, res) => {
+    DocumentService.getAllDocumentsForAuthor(req, res);
+});
+
+app.post('/documents', AuthService.verifyToken, (req, res) => {
+    DocumentService.addDocument(req, res);
+});
+
+app.put('/documents/:id', AuthService.verifyToken, (req, res) => {
+    DocumentService.editDocument(req, res);
+});
+
+app.delete('/documents/:id', AuthService.verifyToken, (req, res) => {
+    DocumentService.deleteDocument(req, res);
+});
 // Endpoints dla użytkowników
 app.get('/getallusers', AuthService.verifyToken, AuthService.isAdmin, (req, res) => {
     UserService.getAllUsers(req, res);
