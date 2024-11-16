@@ -1,4 +1,4 @@
-const DatabaseService = require('./DatabaseService');
+const DatabaseService = require('./DataBaseService');
 const dbService = new DatabaseService();
 
 class UserService {
