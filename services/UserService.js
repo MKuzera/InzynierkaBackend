@@ -60,6 +60,22 @@ class UserService {
             res.json({ message: 'User deleted successfully' });
         });
     }
+
+    static getUser(req, res) {
+        const userId = req.params.id;
+        const query = 'SELECT * FROM users WHERE id = ?';
+        const db = dbService.getConnection();
+
+        db.query(query, [userId], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: 'Error fetching user' });
+            }
+            if (results.length === 0) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            res.json(results[0]);
+        });
+    }
 }
 
 module.exports = UserService;
