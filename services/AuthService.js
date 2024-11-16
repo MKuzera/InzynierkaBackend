@@ -9,32 +9,32 @@ class AuthService {
             return res.status(401).json({ message: 'Authorization header missing' });
         }
 
-        const [login, password] = Buffer.from(authHeader.split(' ')[1], 'base64')
+        const [username, password] = Buffer.from(authHeader.split(' ')[1], 'base64')
             .toString('ascii')
             .split(':');
 
-        const query = 'SELECT id, type FROM users WHERE login = ? AND password = ?';
+        const query = 'SELECT id, type FROM users WHERE username = ? AND password = ?';
         const db = dbService.getConnection();
 
-        db.query(query, [login, password], (err, results) => {
+        db.query(query, [username, password], (err, results) => {
             if (err) {
                 return res.status(500).json({ message: 'Internal server error' + err });
             }
 
             if (results.length === 0) {
-                return res.status(401).json({ message: 'Invalid login or password' });
+                return res.status(401).json({ message: 'Invalid username or password' });
             }
 
             const user = results[0];
             const token = jwt.sign(
-                { userId: user.id, userType: user.userType },
+                { userId: user.id, userType: user.type }, // Zmieniono 'userType' na 'type' zgodnie z tabelą
                 process.env.JWT_SECRET,
                 { expiresIn: '1h' }
             );
 
             return res.status(200).json({
                 message: 'Login successful',
-                userType: user.userType,
+                userType: user.type, // Zmieniono 'userType' na 'type'
                 token: token,
             });
         });
