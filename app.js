@@ -1,10 +1,14 @@
 const express = require('express');
-const app = express();
+const bodyParser = require('body-parser');
 require('dotenv').config();
 const DatabaseService = require('./DatabaseService');
+const LoginService = require('./LoginService'); // Importujemy LoginService
+
+const app = express();
 const dbService = new DatabaseService();
 
-app.use(express.json());
+app.use(bodyParser.json());
+app.use('/api', LoginService);  // Rejestrujemy LoginService pod ścieżką /api
 
 app.get('/getallusers', (req, res) => {
     const query = 'SELECT * FROM users';
@@ -12,7 +16,6 @@ app.get('/getallusers', (req, res) => {
 
     db.query(query, (err, results) => {
         if (err) {
-            console.error('Error fetching users:', err);
             return res.status(500).json({ message: 'Error fetching users' });
         }
         res.json(results);

@@ -1,30 +1,11 @@
-const jwt = require('jsonwebtoken');
 const express = require('express');
-const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 const DatabaseService = require('./DatabaseService');
-
-const app = express();
 const dbService = new DatabaseService();
 
-app.use(bodyParser.json());
+const router = express.Router();
 
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) {
-        return res.status(401).json({ message: 'Authorization header missing' });
-    }
-
-    const token = authHeader.split(' ')[1];
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).json({ message: 'Invalid token' });
-        }
-        req.user = user;
-        next();
-    });
-};
-
-app.post('/login', (req, res) => {
+router.post('/login', (req, res) => {
     const authHeader = req.headers['authorization'];
     if (!authHeader) {
         return res.status(401).json({ message: 'Authorization header missing' });
@@ -47,7 +28,6 @@ app.post('/login', (req, res) => {
         }
 
         const user = results[0];
-
         const token = jwt.sign(
             { userId: user.id, userType: user.userType },
             process.env.JWT_SECRET,
@@ -62,14 +42,4 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.get('/protected', authenticateToken, (req, res) => {
-    res.json({
-        message: 'You have access to protected data!',
-        user: req.user,
-    });
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+module.exports = router;
