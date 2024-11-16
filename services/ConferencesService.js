@@ -13,7 +13,7 @@ class ConferenceService {
     static validateUserRole(req, res) {
         const userType = req.userType;  // User type added by AuthService during token verification
         if (userType !== 'admin' && userType !== 'creator') {
-            return res.status(403).json({ message: 'Forbidden: You do not have permission to perform this action' });
+            return res.status(403).json({ message: 'Forbidden: You do not have permission to perform this action' + userType });
         }
         return true;
     }
