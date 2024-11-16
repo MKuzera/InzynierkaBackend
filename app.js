@@ -8,7 +8,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.get('/getallusers', (req, res) => {
+app.get('/getallusers', AuthService.verifyToken, (req, res) => {
     UserService.getAllUsers(req, res);
 });
 
