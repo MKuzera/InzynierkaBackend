@@ -13,7 +13,7 @@ class AuthService {
             .toString('ascii')
             .split(':');
 
-        const query = 'SELECT id, userType FROM users WHERE login = ? AND password = ?';
+        const query = 'SELECT id, type FROM users WHERE login = ? AND password = ?';
         const db = dbService.getConnection();
 
         db.query(query, [login, password], (err, results) => {
