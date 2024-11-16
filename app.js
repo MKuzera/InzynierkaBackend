@@ -8,6 +8,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
+// Endpoints dla użytkowników
 app.get('/getallusers', AuthService.verifyToken, AuthService.isAdmin, (req, res) => {
     UserService.getAllUsers(req, res);
 });
@@ -32,26 +33,26 @@ app.post('/login', (req, res) => {
     AuthService.login(req, res);
 });
 
-app.get('/conferences', AuthService.verifyToken, (req, res) => {
+// Endpoints dla konferencji
+app.get('/conferences', AuthService.verifyToken, AuthService.isCreatorOrAdmin, (req, res) => {
     ConferenceService.getAllConferences(req, res);
 });
 
-app.post('/conferences', AuthService.verifyToken, (req, res) => {
+app.post('/conferences', AuthService.verifyToken, AuthService.isCreatorOrAdmin, (req, res) => {
     ConferenceService.addConference(req, res);
 });
 
-app.put('/conferences/:id', AuthService.verifyToken, (req, res) => {
+app.put('/conferences/:id', AuthService.verifyToken, AuthService.isCreatorOrAdmin, (req, res) => {
     ConferenceService.editConference(req, res);
 });
 
-app.delete('/conferences/:id', AuthService.verifyToken, (req, res) => {
+app.delete('/conferences/:id', AuthService.verifyToken, AuthService.isCreatorOrAdmin, (req, res) => {
     ConferenceService.deleteConference(req, res);
 });
 
-app.get('/conferences/:id', AuthService.verifyToken, (req, res) => {
+app.get('/conferences/:id', AuthService.verifyToken, AuthService.isCreatorOrAdmin, (req, res) => {
     ConferenceService.getConference(req, res);
 });
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

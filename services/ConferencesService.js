@@ -1,6 +1,5 @@
 const DatabaseService = require('./DataBaseService');
 const dbService = new DatabaseService();
-const AuthService = require('./AuthService');
 
 class ConferenceService {
     static validateConferenceData(title, description, location, price, date) {
@@ -10,17 +9,7 @@ class ConferenceService {
         return true;
     }
 
-    static validateUserRole(req, res) {
-        const userType = req.userType;  // User type added by AuthService during token verification
-        if (!AuthService.isAdmin(req,res) && !AuthService.isCreator(req,res)) {
-            return res.status(403).json({ message: 'Forbidden: You do not have permission to perform this action' + userType });
-        }
-        return true;
-    }
-
     static getAllConferences(req, res) {
-        if (!this.validateUserRole(req, res)) return;
-
         const query = 'SELECT * FROM conferences';
         const db = dbService.getConnection();
 
@@ -33,8 +22,6 @@ class ConferenceService {
     }
 
     static addConference(req, res) {
-        if (!this.validateUserRole(req, res)) return;
-
         const { title, description, location, organizers, tags, price, date, link, organizerID } = req.body;
 
         if (!this.validateConferenceData(title, description, location, price, date)) {
@@ -53,8 +40,6 @@ class ConferenceService {
     }
 
     static editConference(req, res) {
-        if (!this.validateUserRole(req, res)) return;
-
         const conferenceId = req.params.id;
         const { title, description, location, organizers, tags, price, date, link, organizerID } = req.body;
 
@@ -77,8 +62,6 @@ class ConferenceService {
     }
 
     static deleteConference(req, res) {
-        if (!this.validateUserRole(req, res)) return;
-
         const conferenceId = req.params.id;
         const query = 'DELETE FROM conferences WHERE id = ?';
         const db = dbService.getConnection();
