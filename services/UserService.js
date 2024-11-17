@@ -91,7 +91,7 @@ class UserService {
         });
     }
     static getUserByLogin(req, res) {
-        const userName = req.params.name;
+        const userName = req.params.login;
         const query = 'SELECT * FROM users WHERE login = ?';
         const db = dbService.getConnection();
 
