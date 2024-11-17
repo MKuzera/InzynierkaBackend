@@ -10,9 +10,21 @@ app.use(bodyParser.json());
 const DocumentService = require('./services/DocumentService');
 const cors = require("cors");
 
+
+const allowedOrigins = [
+    'http://3.72.222.19:3000',
+    'http://localhost:3000'
+];
+
 app.use(cors({
-    origin: 'http://3.72.222.19:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 app.get('/documents', AuthService.verifyToken, (req, res) => {
     DocumentService.getAllDocuments(req, res);
