@@ -70,6 +70,10 @@ app.get('/getuser/:id', AuthService.verifyToken, (req, res) => {
     UserService.getUser(req, res);
 });
 
+app.get('/users/:name', AuthService.verifyToken, (req, res) => {
+    UserService.getUserByName(req, res);
+});
+
 app.post('/login', (req, res) => {
     AuthService.login(req, res);
 });
