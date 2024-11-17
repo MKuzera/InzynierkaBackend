@@ -90,9 +90,9 @@ class UserService {
             res.json(results[0]);
         });
     }
-    static getUserByName(req, res) {
+    static getUserByLogin(req, res) {
         const userName = req.params.name;
-        const query = 'SELECT * FROM users WHERE name = ?';
+        const query = 'SELECT * FROM users WHERE login = ?';
         const db = dbService.getConnection();
 
         db.query(query, [userName], (err, results) => {
