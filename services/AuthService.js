@@ -34,6 +34,7 @@ class AuthService {
 
             return res.status(200).json({
                 message: 'Login successful',
+                userId: user.id,
                 userType: user.type,
                 token: token,
             });
