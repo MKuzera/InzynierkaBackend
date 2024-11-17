@@ -1,4 +1,5 @@
-import mysql from 'mysql2';
+const mysql = require('mysql2');
+
 
 class DatabaseService {
     constructor() {
@@ -38,4 +39,4 @@ class DatabaseService {
     }
 }
 
-export default DatabaseService;
+module.exports= DatabaseService;

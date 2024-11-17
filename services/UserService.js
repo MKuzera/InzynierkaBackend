@@ -1,4 +1,4 @@
-import DatabaseService from './DataBaseService.js';  // Import with ES module syntax
+const DatabaseService = require('./DataBaseService');
 const dbService = new DatabaseService();
 
 class UserService {
@@ -92,4 +92,4 @@ class UserService {
     }
 }
 
-export default UserService;  // Export with ES module syntax
+module.exports = UserService;  // Export with ES module syntax
