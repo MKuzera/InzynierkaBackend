@@ -1,13 +1,10 @@
-const DatabaseService = require('./DataBaseService');
+import DatabaseService from './DataBaseService.js';  // Import with ES module syntax
 const dbService = new DatabaseService();
 
 class UserService {
     static validateUserType(type) {
         const validTypes = ['admin', 'creator', 'user'];
-        if (!validTypes.includes(type)) {
-            return false;
-        }
-        return true;
+        return validTypes.includes(type);
     }
 
     static getAllUsers(req, res) {
@@ -95,4 +92,4 @@ class UserService {
     }
 }
 
-module.exports = UserService;
+export default UserService;  // Export with ES module syntax
