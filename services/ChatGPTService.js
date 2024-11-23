@@ -3,7 +3,7 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-class OpenAI {
+class ChatGPTService {
     static async getResponse(prompt) {
         // Read the API key from a file (you could use environment variables here as well)
         const apiKey = fs.readFileSync(path.join(__dirname, 'apikey.txt'), 'utf8').trim();
@@ -43,4 +43,4 @@ class OpenAI {
     }
 }
 
-module.exports = OpenAI;
+module.exports = ChatGPTService;

@@ -4,6 +4,7 @@ require('dotenv').config();
 const UserService = require('./services/UserService');
 const AuthService = require('./services/AuthService');
 const ConferenceService = require('./services/ConferencesService');
+const ChatGptService = require('./services/ChatGPTService');
 const app = express();
 
 app.use(bodyParser.json());
@@ -102,7 +103,7 @@ app.get('/conferences/:id', AuthService.verifyToken, AuthService.isCreatorOrAdmi
     ConferenceService.getConference(req, res);
 });
 app.post('/chatgpt', AuthService.verifyToken, (req, res) => {
-    ChatGPTService.getResponse(req, res);
+    ChatGptService.getResponse(req, res);
 });
 
 const PORT = process.env.PORT || 3000;
