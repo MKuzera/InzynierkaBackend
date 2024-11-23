@@ -1,7 +1,7 @@
 // services/OpenAI.js
-import axios from 'axios';
-import fs from 'fs';
-import path from 'path';
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 
 class ChatGPTService {
     static async getResponse(prompt) {
