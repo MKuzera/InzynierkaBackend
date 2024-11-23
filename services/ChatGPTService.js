@@ -57,7 +57,7 @@ class ChatGPTService {
             }
         } catch (error) {
             console.error('Error fetching response from OpenAI:', safeStringify(error));  // Safe error logging
-            throw new Error('Unable to fetch response from OpenAI API');
+            return error;
         }
     }
 }
