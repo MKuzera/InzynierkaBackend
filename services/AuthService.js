@@ -70,10 +70,10 @@ class AuthService {
                 return res.status(500).json({ message: 'Error hashing password' });
             }
 
-            const query = 'INSERT INTO users (username, password, email) VALUES (?, ?, ?)';
+            const query = 'INSERT INTO users (username, password, email, type) VALUES (?, ?, ?, ?)';
             const db = dbService.getConnection();
 
-            db.query(query, [login, hashedPassword, email], (err, results) => {
+            db.query(query, [login, hashedPassword, email, "user"], (err, results) => {
                 if (err) {
                     return res.status(500).json({ message: 'Internal server error' + err });
                 }
