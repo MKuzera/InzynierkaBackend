@@ -38,7 +38,18 @@ class ConferenceService {
             res.status(201).json({ message: 'Conference added successfully', conferenceId: results.insertId });
         });
     }
+    static getAllConferencesForOrganizer(req, res) {
+        const authorId = req.params.authorId;
+        const query = 'SELECT * FROM conferences WHERE organizerID = ?';
+        const db = dbService.getConnection();
 
+        db.query(query, [authorId], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: 'Error fetching conferences for organizer' });
+            }
+            res.json(results);
+        });
+    }
     static editConference(req, res) {
         const conferenceId = req.params.id;
         const { title, description, location, organizers, tags, price, date, link, organizerID } = req.body;
