@@ -76,7 +76,7 @@ app.post('/login', (req, res) => {
 });
 
 // Endpoints dla konferencji
-app.get('/conferences', AuthService.verifyToken, AuthService.isCreatorOrAdmin, (req, res) => {
+app.get('/conferences', AuthService.verifyToken, (req, res) => {
     ConferenceService.getAllConferences(req, res);
 });
 app.get('/conferences/author/:authorId', AuthService.verifyToken, (req, res) => {
