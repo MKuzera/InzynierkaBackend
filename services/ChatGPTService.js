@@ -3,28 +3,43 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
+// Function to safely stringify objects to prevent circular references
+const safeStringify = (obj) => {
+    const seen = new Set();
+    return JSON.stringify(obj, (key, value) => {
+        if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) {
+                return; // Return undefined to avoid circular reference
+            }
+            seen.add(value);
+        }
+        return value;
+    });
+};
+
 class ChatGPTService {
     static async getResponse(prompt) {
-        // Read the API key from a file (you could use environment variables here as well)
-        const apiKey = fs.readFileSync(path.join(__dirname, 'apikey.txt'), 'utf8').trim();
+        // Use environment variable for API key or fall back to reading from file
+        const apiKey = process.env.OPENAI_API_KEY || fs.readFileSync(path.join(__dirname, 'apikey.txt'), 'utf8').trim();
 
         if (!apiKey) {
             throw new Error('API key is missing.');
         }
 
         const endpoint = 'https://api.openai.com/v1/completions'; // For GPT-3 (text-davinci-003)
+        // For GPT-4, you might want to use the new chat API endpoint
+        // const endpoint = 'https://api.openai.com/v1/chat/completions';
 
         try {
-            // Send request to OpenAI API to get response for the prompt
             const response = await axios.post(
                 endpoint,
                 {
-                    model: 'text-davinci-003',  // Use GPT-3 (you can change to GPT-4 if available)
-                    prompt: prompt,             // The user's input (prompt)
-                    max_tokens: 100,            // The maximum number of tokens for the output
-                    temperature: 0.7,           // Controls the randomness of the output
-                    n: 1,                       // Number of responses to return
-                    stop: ['\n'],               // Stop at newline to get one complete response
+                    model: 'text-davinci-003', // Or 'gpt-4' for GPT-4 (if available)
+                    prompt: prompt,            // The prompt passed from the user
+                    max_tokens: 100,           // Max number of tokens in the response
+                    temperature: 0.7,          // Controls randomness of the output
+                    n: 1,                      // Number of responses to return
+                    stop: ['\n'],              // Stop at newline
                 },
                 {
                     headers: {
@@ -34,10 +49,14 @@ class ChatGPTService {
                 }
             );
 
-            // Return the text response from OpenAI
-            return response.data.choices[0].text.trim();
+            // Check if response data is valid
+            if (response.data && response.data.choices && response.data.choices[0]) {
+                return response.data.choices[0].text.trim();
+            } else {
+                throw new Error('Invalid response from OpenAI API.');
+            }
         } catch (error) {
-            console.error('Error fetching response from OpenAI:', error);
+            console.error('Error fetching response from OpenAI:', safeStringify(error));  // Safe error logging
             throw new Error('Unable to fetch response from OpenAI API');
         }
     }
