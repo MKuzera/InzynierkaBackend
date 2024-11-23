@@ -6,18 +6,21 @@ const bcrypt = require('bcrypt');
 class AuthService {
     static login(req, res) {
         const authHeader = req.headers['authorization'];
+
         if (!authHeader) {
             return res.status(401).json({ message: 'Authorization header missing' });
         }
 
+        // Decode the base64 authorization header (username:password)
         const [username, password] = Buffer.from(authHeader.split(' ')[1], 'base64')
             .toString('ascii')
             .split(':');
 
-        const query = 'SELECT id, type FROM users WHERE username = ? AND password = ?';
+        // Query to fetch the user based on username
+        const query = 'SELECT id, type, password FROM users WHERE username = ?';
         const db = dbService.getConnection();
 
-        db.query(query, [username, password], (err, results) => {
+        db.query(query, [username], (err, results) => {
             if (err) {
                 return res.status(500).json({ message: 'Internal server error' + err });
             }
@@ -27,17 +30,30 @@ class AuthService {
             }
 
             const user = results[0];
-            const token = jwt.sign(
-                { userId: user.id, userType: user.type },
-                process.env.JWT_SECRET,
-                { expiresIn: '1h' }
-            );
 
-            return res.status(200).json({
-                message: 'Login successful',
-                userId: user.id,
-                userType: user.type,
-                token: token,
+            // Compare the provided password with the stored hash
+            bcrypt.compare(password, user.password, (err, isMatch) => {
+                if (err) {
+                    return res.status(500).json({ message: 'Error comparing passwords' });
+                }
+
+                if (!isMatch) {
+                    return res.status(401).json({ message: 'Invalid username or password' });
+                }
+
+                // If the password matches, generate a JWT token
+                const token = jwt.sign(
+                    { userId: user.id, userType: user.type },
+                    process.env.JWT_SECRET,
+                    { expiresIn: '1h' }
+                );
+
+                return res.status(200).json({
+                    message: 'Login successful',
+                    userId: user.id,
+                    userType: user.type,
+                    token: token,
+                });
             });
         });
     }
