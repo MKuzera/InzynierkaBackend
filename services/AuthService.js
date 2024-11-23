@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const DatabaseService = require('./DataBaseService');
 const dbService = new DatabaseService();
+const bcrypt = require('bcrypt');
 
 class AuthService {
     static login(req, res) {
@@ -40,6 +41,36 @@ class AuthService {
             });
         });
     }
+
+    static register(req, res) {
+        const { login, password, email } = req.body;
+
+        if (!login || !password || !email) {
+            return res.status(400).json({ message: 'Login, password, and email are required' });
+        }
+
+        bcrypt.hash(password, 10, (err, hashedPassword) => {
+            if (err) {
+                return res.status(500).json({ message: 'Error hashing password' });
+            }
+
+            const query = 'INSERT INTO users (username, password, email) VALUES (?, ?, ?)';
+            const db = dbService.getConnection();
+
+            db.query(query, [login, hashedPassword, email], (err, results) => {
+                if (err) {
+                    return res.status(500).json({ message: 'Internal server error' + err });
+                }
+
+                return res.status(201).json({
+                    message: 'Registration successful',
+                    userId: results.insertId,
+                });
+            });
+        });
+    }
+
+
 
     static verifyToken(req, res, next) {
         const authHeader = req.headers['authorization'];

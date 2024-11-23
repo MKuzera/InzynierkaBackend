@@ -75,6 +75,10 @@ app.post('/login', (req, res) => {
     AuthService.login(req, res);
 });
 
+app.post('/register', (req, res) => {
+    AuthService.register(req, res);
+});
+
 // Endpoints dla konferencji
 app.get('/conferences', AuthService.verifyToken, (req, res) => {
     ConferenceService.getAllConferences(req, res);
