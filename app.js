@@ -101,6 +101,9 @@ app.delete('/conferences/:id', AuthService.verifyToken, AuthService.isCreatorOrA
 app.get('/conferences/:id', AuthService.verifyToken, AuthService.isCreatorOrAdmin, (req, res) => {
     ConferenceService.getConference(req, res);
 });
+app.post('/chatgpt', AuthService.verifyToken, (req, res) => {
+    ChatGPTService.getResponse(req, res);
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
