@@ -53,7 +53,7 @@ class ChatGPTService {
             if (response.data && response.data.choices && response.data.choices[0]) {
                 return response.data.choices[0].text.trim();
             } else {
-                throw new Error('Invalid response from OpenAI API.');
+               return response;
             }
         } catch (error) {
             console.error('Error fetching response from OpenAI:', safeStringify(error));  // Safe error logging
