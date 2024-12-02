@@ -27,8 +27,19 @@ app.use(cors({
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
+
 app.get('/documents', AuthService.verifyToken, (req, res) => {
     DocumentService.getAllDocuments(req, res);
+});
+
+app.post('/chat', AuthService.verifyToken, async (req, res) => {
+    try {
+        const response = await ChatGptService.chat(req.body.prompt);
+        res.json(response);
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).json({ error: 'Failed to fetch response from ChatGPT' });
+    }
 });
 
 app.get('/documents/:id', AuthService.verifyToken, (req, res) => {
