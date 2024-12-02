@@ -59,7 +59,7 @@ class AuthService {
     }
 
     static register(req, res) {
-        const { login, password, email } = req.body;
+        const { login, password, email, userType } = req.body;
 
         if (!login || !password || !email) {
             return res.status(400).json({ message: 'Login, password, and email are required' });
@@ -73,7 +73,7 @@ class AuthService {
             const query = 'INSERT INTO users (username, password, email, type) VALUES (?, ?, ?, ?)';
             const db = dbService.getConnection();
 
-            db.query(query, [login, hashedPassword, email, "user"], (err, results) => {
+            db.query(query, [login, hashedPassword, email, userType], (err, results) => {
                 if (err) {
                     return res.status(500).json({ message: 'Internal server error' + err });
                 }
