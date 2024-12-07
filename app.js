@@ -29,7 +29,7 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
-app.get('/uploadFile', AuthService.verifyToken, (req, res) => {
+app.post('/uploadFile', AuthService.verifyToken, (req, res) => {
     FileService.UploadDocument(req, res);
 });
 
