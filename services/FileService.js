@@ -37,5 +37,21 @@ class FileService {
             });
         });
     }
+    static DownloadDocument(req, res) {
+        const { filename } = req.params;
+
+        const filePath = path.join(__dirname, 'files', filename);
+
+        if (fs.existsSync(filePath)) {
+            res.download(filePath, filename, (err) => {
+                if (err) {
+                    console.error('Error during file download:', err);
+                    return res.status(500).json({ message: 'Error downloading the file' });
+                }
+            });
+        } else {
+            res.status(404).json({ message: 'File not found' });
+        }
+    }
 }
 module.exports = FileService;

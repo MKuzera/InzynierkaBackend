@@ -34,6 +34,8 @@ app.post('/uploadFile', AuthService.verifyToken, (req, res) => {
 });
 
 
+app.get('/download/:filename', AuthService.verifyToken, FileService.DownloadDocument);
+
 app.get('/documents', AuthService.verifyToken, (req, res) => {
     DocumentService.getAllDocuments(req, res);
 });
