@@ -5,6 +5,7 @@ const UserService = require('./services/UserService');
 const AuthService = require('./services/AuthService');
 const ConferenceService = require('./services/ConferencesService');
 const ChatGptService = require('./services/ChatGPTService');
+const FileService = require('./services/FileService');
 const app = express();
 
 app.use(bodyParser.json());
@@ -28,19 +29,15 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
+app.get('/uploadFile', AuthService.verifyToken, (req, res) => {
+    FileService.UploadDocument(req, res);
+});
+
+
 app.get('/documents', AuthService.verifyToken, (req, res) => {
     DocumentService.getAllDocuments(req, res);
 });
 
-app.post('/chat', AuthService.verifyToken, async (req, res) => {
-    try {
-        const response = await ChatGptService.chat(req.body.prompt);
-        res.json(response);
-    } catch (err) {
-        console.error('Error:', err);
-        res.status(500).json({ error: 'Failed to fetch response from ChatGPT' });
-    }
-});
 
 app.get('/documents/:id', AuthService.verifyToken, (req, res) => {
     DocumentService.getDocument(req, res);
