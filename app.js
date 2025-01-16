@@ -95,7 +95,7 @@ app.get('/conferences', AuthService.verifyToken, (req, res) => {
     ConferenceService.getAllConferences(req, res);
 });
 app.get('/conferences/author/:authorId', AuthService.verifyToken, (req, res) => {
-    ConferenceService.getAllConferencesForOrganizer(req, res);
+    ConferenceService.getAllConferencesForCreator(req, res);
 });
 app.post('/conferences', AuthService.verifyToken, AuthService.isCreatorOrAdmin, (req, res) => {
     ConferenceService.addConference(req, res);

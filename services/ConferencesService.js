@@ -38,7 +38,7 @@ class ConferenceService {
             res.status(201).json({ message: 'Conference added successfully', conferenceId: results.insertId });
         });
     }
-    static getAllConferencesForOrganizer(req, res) {
+    static getAllConferencesForCreator(req, res) {
         const authorId = req.params.authorId;
         const query = 'SELECT * FROM conferences WHERE organizerID = ?';
         const db = dbService.getConnection();
