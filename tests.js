@@ -85,17 +85,24 @@ class Tests {
                 }
 
                 UserService.editUserQuery(result.userId, newUsername, password, email, type, (err, updatedUser) => {
-                    if (err || !updatedUser || updatedUser.username !== newUsername) {
+                    if (err) {
                         resolve(false);
                         return;
                     }
 
-                    UserService.deleteUserQuery(result.userId, (err) => {
-                        if (err) {
+                    UserService.getUserQuery(result.userId, (err, user) => {
+                        if (err || !user || user.username !== newUsername) {
                             resolve(false);
-                        } else {
-                            resolve(true);
+                            return;
                         }
+
+                        UserService.deleteUserQuery(result.userId, (err) => {
+                            if (err) {
+                                resolve(false);
+                            } else {
+                                resolve(true);
+                            }
+                        });
                     });
                 });
             });
