@@ -41,7 +41,7 @@ class ConferenceService {
             if (err) {
                 return callback(err, null);
             }
-            callback(null, results);
+            callback(null, results[0]);
         });
     }
 

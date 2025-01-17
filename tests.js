@@ -429,7 +429,6 @@ class Tests {
             ConferenceService.addConferenceQuery(title, description, location, organizers, tags, price, date, link, organizerID, (err,result) => {
                 if (err) {
                     resolve(false);
-                    console.log(err + "ADD");
                     return;
                 }
 
@@ -438,16 +437,12 @@ class Tests {
                 ConferenceService.deleteConferenceQuery(conferenceId, (err, result) => {
                     if (err || result.affectedRows === 0) {
                         resolve(false);
-                        console.log(err + "delete");
                         return;
                     }
 
                     ConferenceService.getConferenceQuery(conferenceId, (err, conference) => {
-                        console.log("Conference data:", JSON.stringify(conference));
-
-                        if (conference && conference.length > 0) {
+                        if (conference) {
                             resolve(false);
-                            console.log(conference + "empty");
                         } else {
                             resolve(true);
                         }
