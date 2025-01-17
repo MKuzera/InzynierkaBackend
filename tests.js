@@ -1,6 +1,3 @@
-require('dotenv').config();
-const UserService = require('./services/UserService');
-
 class Tests {
     static async testAddUser() {
         const username = "testuser_add";
@@ -108,6 +105,48 @@ class Tests {
             });
         });
     }
+
+    static async testGetUser() {
+        const username = "testuser_get";
+        const password = "password";
+        const email = "test@example.com";
+        const type = "user";
+
+        return new Promise((resolve) => {
+            UserService.addUserQuery(username, password, email, type, (err, result) => {
+                if (err) {
+                    resolve(false);
+                    return;
+                }
+
+                UserService.getUserQuery(result.userId, (err, user) => {
+                    if (err || !user || user.username !== username || user.email !== email || user.type !== type) {
+                        resolve(false);
+                    } else {
+                        UserService.deleteUserQuery(result.userId, (err) => {
+                            if (err) {
+                                resolve(false);
+                            } else {
+                                resolve(true);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    }
+
+    static async testGetAllUsers() {
+        return new Promise((resolve) => {
+            UserService.getAllUsersQuery((err, users) => {
+                if (err || !users || users.length === 0) {
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
+    }
 }
 
 async function runTests() {
@@ -119,6 +158,12 @@ async function runTests() {
 
     const editUserResult = await Tests.testEditUser();
     console.log("Wynik testu EditUser:", editUserResult);
+
+    const getUserResult = await Tests.testGetUser();
+    console.log("Wynik testu GetUser:", getUserResult);
+
+    const getAllUsersResult = await Tests.testGetAllUsers();
+    console.log("Wynik testu GetAllUsers:", getAllUsersResult);
 }
 
 runTests();
