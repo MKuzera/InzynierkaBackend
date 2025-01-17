@@ -3,7 +3,7 @@ const UserService = require('./services/UserService');
 
 class Tests {
     static async testAddUser() {
-        const username = "testuser";
+        const username = "testuser_add";
         const password = "password";
         const email = "test@example.com";
         const type = "user";
@@ -33,7 +33,7 @@ class Tests {
     }
 
     static async testAddAndRemoveUser() {
-        const username = "testuser";
+        const username = "testuser_remove";
         const password = "password";
         const email = "test@example.com";
         const type = "user";
