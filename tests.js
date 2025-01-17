@@ -429,6 +429,7 @@ class Tests {
             ConferenceService.addConferenceQuery(title, description, location, organizers, tags, price, date, link, organizerID, (err, result) => {
                 if (err) {
                     resolve(false);
+                    console.log(err);
                     return;
                 }
 
@@ -437,12 +438,14 @@ class Tests {
                 ConferenceService.deleteConferenceQuery(conferenceId, (err, result) => {
                     if (err || result.affectedRows === 0) {
                         resolve(false);
+                        console.log(err);
                         return;
                     }
 
                     ConferenceService.getConferenceQuery(conferenceId, (err, conference) => {
                         if (conference) {
                             resolve(false);
+                            console.log(conference);
                         } else {
                             resolve(true);
                         }
@@ -466,7 +469,6 @@ class Tests {
         return new Promise((resolve) => {
             ConferenceService.addConferenceQuery(title, description, location, organizers, tags, price, date, link, organizerID, (err, result) => {
                 if (err) {
-                    console.log(err);
                     resolve(false);
                     return;
                 }
@@ -476,14 +478,12 @@ class Tests {
                 ConferenceService.getConferenceQuery(conferenceId, (err, conference) => {
                     if (err || !conference) {
                         resolve(false);
-                        console.log(err);
                         return;
                     }
 
                     ConferenceService.deleteConferenceQuery(conferenceId, (err) => {
                         if (err) {
                             resolve(false);
-                            console.log(err);
                         } else {
                             resolve(true);
                         }
