@@ -426,10 +426,10 @@ class Tests {
         const organizerID = 1;
 
         return new Promise((resolve) => {
-            ConferenceService.addConferenceQuery(title, description, location, organizers, tags, price, date, link, organizerID, (err, result) => {
+            ConferenceService.addConferenceQuery(title, description, location, organizers, tags, price, date, link, organizerID, (result,err) => {
                 if (err) {
                     resolve(false);
-                    console.log(err);
+                    console.log(err + "ADD");
                     return;
                 }
 
@@ -438,14 +438,14 @@ class Tests {
                 ConferenceService.deleteConferenceQuery(conferenceId, (err, result) => {
                     if (err || result.affectedRows === 0) {
                         resolve(false);
-                        console.log(err);
+                        console.log(err + "delete");
                         return;
                     }
 
                     ConferenceService.getConferenceQuery(conferenceId, (err, conference) => {
                         if (conference) {
                             resolve(false);
-                            console.log(conference);
+                            console.log(conference + "empty");
                         } else {
                             resolve(true);
                         }
