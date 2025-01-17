@@ -4,7 +4,6 @@ require('dotenv').config();
 const UserService = require('./services/UserService');
 const AuthService = require('./services/AuthService');
 const ConferenceService = require('./services/ConferencesService');
-const ChatGptService = require('./services/ChatGPTService');
 const FileService = require('./services/FileService');
 const app = express();
 
