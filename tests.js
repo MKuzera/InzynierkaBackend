@@ -84,8 +84,7 @@ class Tests {
                     return;
                 }
 
-                // Update username
-                UserService.updateUserQuery(result.userId, { username: newUsername }, (err, updatedUser) => {
+                UserService.editUserQuery(result.userId, newUsername, password, email, type, (err, updatedUser) => {
                     if (err || !updatedUser || updatedUser.username !== newUsername) {
                         resolve(false);
                         return;
