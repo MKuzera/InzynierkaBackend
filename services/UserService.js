@@ -83,7 +83,7 @@ class UserService {
 
         db.query(query, [username, password, email, type], (err, results) => {
             if (err) {
-                return callback({ status: 500, message: 'Error adding user' });
+                return callback({ status: 500, message: 'Error adding user' + err });
             }
             callback(null, { message: 'User added successfully', userId: results.insertId });
         });
