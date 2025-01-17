@@ -426,7 +426,7 @@ class Tests {
         const organizerID = 1;
 
         return new Promise((resolve) => {
-            ConferenceService.addConferenceQuery(title, description, location, organizers, tags, price, date, link, organizerID, (result,err) => {
+            ConferenceService.addConferenceQuery(title, description, location, organizers, tags, price, date, link, organizerID, (err,result) => {
                 if (err) {
                     resolve(false);
                     console.log(err + "ADD");
