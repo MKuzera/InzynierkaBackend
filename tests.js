@@ -1,5 +1,5 @@
 const UserService = require('./services/UserService');  // Załaduj UserService
-
+require('dotenv').config();
 class Tests {
     static async runTests() {
         try {
