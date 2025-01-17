@@ -19,7 +19,13 @@ class Tests {
                     if (err || !user || user.username !== username || user.email !== email || user.type !== type) {
                         resolve(false);
                     } else {
-                        resolve(true);
+                        UserService.deleteUserQuery(result.userId, (err) => {
+                            if (err) {
+                                resolve(false);
+                            } else {
+                                resolve(true);
+                            }
+                        });
                     }
                 });
             });
