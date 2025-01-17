@@ -257,7 +257,71 @@ class Tests {
             });
         });
     }
+    static async testGetDocument() {
+        const title = "Test Document";
+        const author = "Test Author";
+        const authorId = 1;
+        const description = "Test Description";
+        const tags = "test, sample";
+        const dateAdded = new Date().toISOString();
+        const link = "http://example.com/document";
 
+        return new Promise((resolve) => {
+            DocumentService.addDocumentQuery(title, author, authorId, description, tags, dateAdded, link, (err, result) => {
+                if (err) {
+                    resolve(false);
+                    return;
+                }
+
+                DocumentService.getDocumentQuery(result.documentId, (err, document) => {
+                    if (err || !document || document.title !== title) {
+                        resolve(false);
+                    } else {
+                        DocumentService.deleteDocumentQuery(result.documentId, (err) => {
+                            if (err) {
+                                resolve(false);
+                            } else {
+                                resolve(true);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    }
+
+    static async testGetAllDocuments() {
+        const title = "Test Document";
+        const author = "Test Author";
+        const authorId = 1;
+        const description = "Test Description";
+        const tags = "test, sample";
+        const dateAdded = new Date().toISOString();
+        const link = "http://example.com/document";
+
+        return new Promise((resolve) => {
+            DocumentService.addDocumentQuery(title, author, authorId, description, tags, dateAdded, link, (err, result) => {
+                if (err) {
+                    resolve(false);
+                    return;
+                }
+
+                DocumentService.getAllDocumentsQuery((err, documents) => {
+                    if (err || !documents || documents.length === 0) {
+                        resolve(false);
+                    } else {
+                        DocumentService.deleteDocumentQuery(result.documentId, (err) => {
+                            if (err) {
+                                resolve(false);
+                            } else {
+                                resolve(true);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    }
 }
 
 
@@ -286,6 +350,12 @@ async function runTests() {
 
     const testRemoveDocumentResult = await  Tests.testRemoveDocument();
     console.log("Wynik testu testRemoveDocument:", testRemoveDocumentResult);
+
+    const testGetDocumentResult = await Tests.testGetDocument();
+    console.log("Wynik testu testGetDocument:", testGetDocumentResult);
+
+    const testGetAllDocumentsResult = await Tests.testGetAllDocuments();
+    console.log("Wynik testu testGetAllDocuments:", testGetAllDocumentsResult);
 }
 
 runTests();
