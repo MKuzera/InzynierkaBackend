@@ -1,5 +1,6 @@
-const UserService = require('./services/UserService');  // Załaduj UserService
 require('dotenv').config();
+const UserService = require('./services/UserService');  // Załaduj UserService
+
 class Tests {
     static async runTests() {
         try {
