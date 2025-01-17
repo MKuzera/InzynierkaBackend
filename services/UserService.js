@@ -8,12 +8,9 @@ class UserService {
     }
 
     static getAllUsers(req, res) {
-        const query = 'SELECT * FROM users';
-        const db = dbService.getConnection();
-
-        db.query(query, (err, results) => {
+        this.getAllUsersQuery((err, results) => {
             if (err) {
-                return res.status(500).json({ message: 'Error fetching users' });
+                return res.status(err.status).json({ message: err.message });
             }
             res.json(results);
         });
@@ -22,18 +19,11 @@ class UserService {
     static addUser(req, res) {
         const { username, password, email, type } = req.body;
 
-        if (!this.validateUserType(type)) {
-            return res.status(400).json({ message: 'Invalid user type. Allowed values: admin, creator, user' });
-        }
-
-        const query = 'INSERT INTO users (username, password, email, type) VALUES (?, ?, ?, ?)';
-        const db = dbService.getConnection();
-
-        db.query(query, [username, password, email, type], (err, results) => {
+        this.addUserQuery(username, password, email, type, (err, result) => {
             if (err) {
-                return res.status(500).json({ message: 'Error adding user' });
+                return res.status(err.status).json({ message: err.message });
             }
-            res.status(201).json({ message: 'User added successfully', userId: results.insertId });
+            res.status(201).json(result);
         });
     }
 
@@ -41,8 +31,67 @@ class UserService {
         const userId = req.params.id;
         const { username, password, email, type } = req.body;
 
+        this.editUserQuery(userId, username, password, email, type, (err, result) => {
+            if (err) {
+                return res.status(err.status).json({ message: err.message });
+            }
+            res.json(result);
+        });
+    }
+
+    static deleteUser(req, res) {
+        const userId = req.params.id;
+
+        this.deleteUserQuery(userId, (err, result) => {
+            if (err) {
+                return res.status(err.status).json({ message: err.message });
+            }
+            res.json(result);
+        });
+    }
+
+    static getUser(req, res) {
+        const userId = req.params.id;
+
+        this.getUserQuery(userId, (err, result) => {
+            if (err) {
+                return res.status(err.status).json({ message: err.message });
+            }
+            res.json(result);
+        });
+    }
+
+    static getAllUsersQuery(callback) {
+        const query = 'SELECT * FROM users';
+        const db = dbService.getConnection();
+
+        db.query(query, (err, results) => {
+            if (err) {
+                return callback({ status: 500, message: 'Error fetching users' });
+            }
+            callback(null, results);
+        });
+    }
+
+    static addUserQuery(username, password, email, type, callback) {
         if (!this.validateUserType(type)) {
-            return res.status(400).json({ message: 'Invalid user type. Allowed values: admin, creator, user' });
+            return callback({ status: 400, message: 'Invalid user type. Allowed values: admin, creator, user' });
+        }
+
+        const query = 'INSERT INTO users (username, password, email, type) VALUES (?, ?, ?, ?)';
+        const db = dbService.getConnection();
+
+        db.query(query, [username, password, email, type], (err, results) => {
+            if (err) {
+                return callback({ status: 500, message: 'Error adding user' });
+            }
+            callback(null, { message: 'User added successfully', userId: results.insertId });
+        });
+    }
+
+    static editUserQuery(userId, username, password, email, type, callback) {
+        if (!this.validateUserType(type)) {
+            return callback({ status: 400, message: 'Invalid user type. Allowed values: admin, creator, user' });
         }
 
         const query = 'UPDATE users SET username = ?, password = ?, email = ?, type = ? WHERE id = ?';
@@ -50,46 +99,44 @@ class UserService {
 
         db.query(query, [username, password, email, type, userId], (err, results) => {
             if (err) {
-                return res.status(500).json({ message: 'Error editing user' });
+                return callback({ status: 500, message: 'Error editing user' });
             }
             if (results.affectedRows === 0) {
-                return res.status(404).json({ message: 'User not found' });
+                return callback({ status: 404, message: 'User not found' });
             }
-            res.json({ message: 'User updated successfully' });
+            callback(null, { message: 'User updated successfully' });
         });
     }
 
-    static deleteUser(req, res) {
-        const userId = req.params.id;
+    static deleteUserQuery(userId, callback) {
         const query = 'DELETE FROM users WHERE id = ?';
         const db = dbService.getConnection();
 
         db.query(query, [userId], (err, results) => {
             if (err) {
-                return res.status(500).json({ message: 'Error deleting user' });
+                return callback({ status: 500, message: 'Error deleting user' });
             }
             if (results.affectedRows === 0) {
-                return res.status(404).json({ message: 'User not found' });
+                return callback({ status: 404, message: 'User not found' });
             }
-            res.json({ message: 'User deleted successfully' });
+            callback(null, { message: 'User deleted successfully' });
         });
     }
 
-    static getUser(req, res) {
-        const userId = req.params.id;
+    static getUserQuery(userId, callback) {
         const query = 'SELECT * FROM users WHERE id = ?';
         const db = dbService.getConnection();
 
         db.query(query, [userId], (err, results) => {
             if (err) {
-                return res.status(500).json({ message: 'Error fetching user' });
+                return callback({ status: 500, message: 'Error fetching user' });
             }
             if (results.length === 0) {
-                return res.status(404).json({ message: 'User not found' });
+                return callback({ status: 404, message: 'User not found' });
             }
-            res.json(results[0]);
+            callback(null, results[0]);
         });
     }
 }
 
-module.exports = UserService;  // Export with ES module syntax
+module.exports = UserService;
