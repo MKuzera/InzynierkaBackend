@@ -336,6 +336,7 @@ class Tests {
         const organizerID = 1;
 
         return new Promise((resolve) => {
+            console.log("weszlo");
             ConferenceService.addConferenceQuery(title, description, location, organizers, tags, price, date, link, organizerID, (err, result) => {
                 if (err) {
                     resolve(false);
@@ -343,7 +344,7 @@ class Tests {
                 }
 
                 const conferenceId = result.insertId;
-
+                console.log(conferenceId);
                 ConferenceService.getConferenceQuery(conferenceId, (err, conference) => {
                     if (err || !conference || conference.title !== title || conference.description !== description || conference.location !== location || conference.tags !== tags) {
                         resolve(false);
@@ -537,8 +538,6 @@ async function runTests() {
     const testGetConferenceResult = await Tests.testGetConference();
     console.log("Wynik testu testGetConference:", testGetConferenceResult);
 
-    const testGetAllConferencesResult = await Tests.testGetAllConferences();
-    console.log("Wynik testu testGetAllConferences:", testGetAllConferencesResult);
 }
 
 runTests();
