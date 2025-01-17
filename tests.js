@@ -1,31 +1,34 @@
 require('dotenv').config();
-const UserService = require('./services/UserService');  // Załaduj UserService
+const UserService = require('./services/UserService');
 
 class Tests {
     static async runTests() {
         try {
-            // Testowanie metody addUserQuery
             const username = "testuser";
             const password = "password";
             const email = "test@example.com";
             const type = "user";
 
-            // Wywołanie metody addUserQuery bez tworzenia instancji
             UserService.addUserQuery(username, password, email, type, (err, result) => {
                 if (err) {
                     console.error("Error adding user:", err.message);
-                } else {
-                    console.log("User added:", result);
+                    return;
                 }
-            });
 
-            // Testowanie metody getAllUsersQuery
-            UserService.getAllUsersQuery((err, users) => {
-                if (err) {
-                    console.error("Error fetching users:", err.message);
-                } else {
-                    console.log("Users:", users);
-                }
+                console.log("User added:", result);
+
+                UserService.getUserQuery(result.userId, (err, user) => {
+                    if (err) {
+                        console.error("Error fetching user:", err.message);
+                        return;
+                    }
+
+                    if (user.username === username && user.email === email && user.type === type) {
+                        console.log("User exists:", true);
+                    } else {
+                        console.log("User exists:", false);
+                    }
+                });
             });
 
         } catch (error) {
@@ -34,5 +37,4 @@ class Tests {
     }
 }
 
-// Uruchom testy
 Tests.runTests();
