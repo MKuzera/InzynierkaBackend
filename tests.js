@@ -510,31 +510,31 @@ async function runTests() {
     console.log("Wynik testu GetAllUsers:", getAllUsersResult);
 
     const testAddDocumentResult = await  Tests.testAddDocument();
-    console.log("Wynik testu testAddDocument:", testAddDocumentResult);
+    console.log("Wynik testu AddDocument:", testAddDocumentResult);
 
     const testEditDocumentResult = await Tests.testEditDocument();
-    console.log("Wynik testu testEditDocument:", testEditDocumentResult);
+    console.log("Wynik testu EditDocument:", testEditDocumentResult);
 
     const testRemoveDocumentResult = await  Tests.testRemoveDocument();
-    console.log("Wynik testu testRemoveDocument:", testRemoveDocumentResult);
+    console.log("Wynik testu RemoveDocument:", testRemoveDocumentResult);
 
     const testGetDocumentResult = await Tests.testGetDocument();
-    console.log("Wynik testu testGetDocument:", testGetDocumentResult);
+    console.log("Wynik testu GetDocument:", testGetDocumentResult);
 
     const testGetAllDocumentsResult = await Tests.testGetAllDocuments();
-    console.log("Wynik testu testGetAllDocuments:", testGetAllDocumentsResult);
+    console.log("Wynik testu GetAllDocuments:", testGetAllDocumentsResult);
 
     const testAddConferenceResult = await Tests.testAddConference();
-    console.log("Wynik testu testAddConference:", testAddConferenceResult);
+    console.log("Wynik testu AddConference:", testAddConferenceResult);
 
     const testEditConferenceResult = await Tests.testEditConference();
-    console.log("Wynik testu testEditConference:", testEditConferenceResult);
+    console.log("Wynik testu EditConference:", testEditConferenceResult);
 
     const testRemoveConferenceResult = await Tests.testRemoveConference();
-    console.log("Wynik testu testRemoveConference:", testRemoveConferenceResult);
+    console.log("Wynik testu RemoveConference:", testRemoveConferenceResult);
 
     const testGetConferenceResult = await Tests.testGetConference();
-    console.log("Wynik testu testGetConference:", testGetConferenceResult);
+    console.log("Wynik testu GetConference:", testGetConferenceResult);
 
 }
 
