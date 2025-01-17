@@ -1,6 +1,7 @@
 require('dotenv').config();
 const UserService = require('./services/UserService');
 const DocumentService = require('./services/DocumentService');
+const ConferenceService = require('./services/ConferencesService');
 class Tests {
     static async testAddUser() {
         const username = "testuser_add";
@@ -322,6 +323,118 @@ class Tests {
             });
         });
     }
+
+    static async testAddConference() {
+        const title = "Test Conference";
+        const description = "This is a test conference";
+        const location = "Test Location";
+        const organizers = "Organizer1, Organizer2";
+        const tags = "Science, Technology";
+        const price = 100;
+        const date = "2025-01-01";
+        const link = "https://testconference.com";
+        const organizerID = 1;
+
+        return new Promise((resolve) => {
+            ConferenceService.addConferenceQuery(title, description, location, organizers, tags, price, date, link, organizerID, (err, result) => {
+                if (err) {
+                    resolve(false);
+                    return;
+                }
+
+                ConferenceService.getConferenceQuery(result.conferenceId, (err, conference) => {
+                    if (err || !conference || conference.title !== title || conference.description !== description || conference.location !== location || conference.tags !== tags) {
+                        resolve(false);
+                    } else {
+                        ConferenceService.deleteConferenceQuery(result.conferenceId, (err) => {
+                            if (err) {
+                                resolve(false);
+                            } else {
+                                resolve(true);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    }
+
+    static async testEditConference() {
+        const conferenceId = 1;
+        const title = "Updated Conference Title";
+        const description = "Updated description";
+        const location = "Updated location";
+        const organizers = "Organizer1, Organizer2";
+        const tags = "Technology, Innovation";
+        const price = 150;
+        const date = "2025-02-01";
+        const link = "https://updatedconference.com";
+        const organizerID = 1;
+
+        return new Promise((resolve) => {
+            ConferenceService.editConferenceQuery(conferenceId, title, description, location, organizers, tags, price, date, link, organizerID, (err, result) => {
+                if (err || result.affectedRows === 0) {
+                    resolve(false);
+                    return;
+                }
+
+                ConferenceService.getConferenceQuery(conferenceId, (err, conference) => {
+                    if (err || !conference || conference.title !== title || conference.description !== description || conference.location !== location || conference.tags !== tags) {
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                });
+            });
+        });
+    }
+
+    static async testRemoveConference() {
+        const conferenceId = 1;
+
+        return new Promise((resolve) => {
+            ConferenceService.deleteConferenceQuery(conferenceId, (err, result) => {
+                if (err || result.affectedRows === 0) {
+                    resolve(false);
+                    return;
+                }
+
+                ConferenceService.getConferenceQuery(conferenceId, (err, conference) => {
+                    if (conference) {
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                });
+            });
+        });
+    }
+
+    static async testGetConference() {
+        const conferenceId = 1;
+
+        return new Promise((resolve) => {
+            ConferenceService.getConferenceQuery(conferenceId, (err, conference) => {
+                if (err || !conference) {
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
+    }
+
+    static async testGetAllConferences() {
+        return new Promise((resolve) => {
+            ConferenceService.getAllConferencesQuery((err, conferences) => {
+                if (err || !conferences || conferences.length === 0) {
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
+    }
 }
 
 
@@ -356,6 +469,21 @@ async function runTests() {
 
     const testGetAllDocumentsResult = await Tests.testGetAllDocuments();
     console.log("Wynik testu testGetAllDocuments:", testGetAllDocumentsResult);
+
+    const testAddConferenceResult = await Tests.testAddConference();
+    console.log("Wynik testu testAddConference:", testAddConferenceResult);
+
+    const testEditConferenceResult = await Tests.testEditConference();
+    console.log("Wynik testu testEditConference:", testEditConferenceResult);
+
+    const testRemoveConferenceResult = await Tests.testRemoveConference();
+    console.log("Wynik testu testRemoveConference:", testRemoveConferenceResult);
+
+    const testGetConferenceResult = await Tests.testGetConference();
+    console.log("Wynik testu testGetConference:", testGetConferenceResult);
+
+    const testGetAllConferencesResult = await Tests.testGetAllConferences();
+    console.log("Wynik testu testGetAllConferences:", testGetAllConferencesResult);
 }
 
 runTests();
