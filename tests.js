@@ -1,6 +1,6 @@
 require('dotenv').config();
 const UserService = require('./services/UserService');
-
+const DocumentService = require('./services/DocumentService');
 class Tests {
     static async testAddUser() {
         const username = "testuser_add";
@@ -150,7 +150,42 @@ class Tests {
             });
         });
     }
+
+    static async testAddDocument() {
+        const title = "Test Document";
+        const author = "Test Author";
+        const authorId = 1;
+        const description = "Test Description";
+        const tags = "test, sample";
+        const dateAdded = new Date().toISOString();
+        const link = "http://example.com/document";
+
+        return new Promise((resolve) => {
+            DocumentService.addDocumentQuery(title, author, authorId, description, tags, dateAdded, link, (err, result) => {
+                if (err) {
+                    resolve(false);
+                    return;
+                }
+
+                DocumentService.getDocumentQuery(result.documentId, (err, document) => {
+                    if (err || !document || document.title !== title || document.author !== author || document.authorId !== authorId || document.description !== description || document.tags !== tags || document.link !== link) {
+                        resolve(false);
+                    } else {
+                        DocumentService.deleteDocumentQuery(result.documentId, (err) => {
+                            if (err) {
+                                resolve(false);
+                            } else {
+                                resolve(true);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    }
 }
+
+
 
 async function runTests() {
     const addUserResult = await Tests.testAddUser();
@@ -167,6 +202,9 @@ async function runTests() {
 
     const getAllUsersResult = await Tests.testGetAllUsers();
     console.log("Wynik testu GetAllUsers:", getAllUsersResult);
+
+    const testAddDocumentResult = await  Tests.testAddDocument();
+    console.log("Wynik testu testAddDocument:", testAddDocumentResult);
 }
 
 runTests();
