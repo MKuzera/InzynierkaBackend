@@ -445,7 +445,7 @@ class Tests {
                     ConferenceService.getConferenceQuery(conferenceId, (err, conference) => {
                         console.log("Conference data:", JSON.stringify(conference));
 
-                        if (conference) {
+                        if (conference && conference.length > 0) {
                             resolve(false);
                             console.log(conference + "empty");
                         } else {
