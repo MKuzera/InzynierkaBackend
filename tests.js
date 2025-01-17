@@ -183,6 +183,81 @@ class Tests {
             });
         });
     }
+    static async testEditDocument() {
+        const title = "Test Document";
+        const author = "Test Author";
+        const authorId = 1;
+        const description = "Test Description";
+        const tags = "test, sample";
+        const dateAdded = new Date().toISOString();
+        const link = "http://example.com/document";
+
+        return new Promise((resolve) => {
+            DocumentService.addDocumentQuery(title, author, authorId, description, tags, dateAdded, link, (err, result) => {
+                if (err) {
+                    resolve(false);
+                    return;
+                }
+
+                const newTitle = "Updated Document Title";
+                DocumentService.editDocumentQuery(result.documentId, newTitle, author, authorId, description, tags, dateAdded, link, (err, updatedResult) => {
+                    if (err) {
+                        resolve(false);
+                        return;
+                    }
+
+                    DocumentService.getDocumentQuery(result.documentId, (err, document) => {
+                        if (err || !document || document.title !== newTitle) {
+                            resolve(false);
+                        } else {
+                            DocumentService.deleteDocumentQuery(result.documentId, (err) => {
+                                if (err) {
+                                    resolve(false);
+                                } else {
+                                    resolve(true);
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    }
+
+    static async testRemoveDocument() {
+        const title = "Test Document";
+        const author = "Test Author";
+        const authorId = 1;
+        const description = "Test Description";
+        const tags = "test, sample";
+        const dateAdded = new Date().toISOString();
+        const link = "http://example.com/document";
+
+        return new Promise((resolve) => {
+            DocumentService.addDocumentQuery(title, author, authorId, description, tags, dateAdded, link, (err, result) => {
+                if (err) {
+                    resolve(false);
+                    return;
+                }
+
+                DocumentService.deleteDocumentQuery(result.documentId, (err) => {
+                    if (err) {
+                        resolve(false);
+                        return;
+                    }
+
+                    DocumentService.getDocumentQuery(result.documentId, (err, document) => {
+                        if (document) {
+                            resolve(false);
+                        } else {
+                            resolve(true);
+                        }
+                    });
+                });
+            });
+        });
+    }
+
 }
 
 
@@ -205,6 +280,12 @@ async function runTests() {
 
     const testAddDocumentResult = await  Tests.testAddDocument();
     console.log("Wynik testu testAddDocument:", testAddDocumentResult);
+
+    const testEditDocumentResult = await Tests.testEditDocument();
+    console.log("Wynik testu testEditDocument:", testEditDocumentResult);
+
+    const testRemoveDocumentResult = await  Tests.testRemoveDocument();
+    console.log("Wynik testu testRemoveDocument:", testRemoveDocumentResult);
 }
 
 runTests();
