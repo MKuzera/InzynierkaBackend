@@ -2,39 +2,75 @@ require('dotenv').config();
 const UserService = require('./services/UserService');
 
 class Tests {
-    static async runTests() {
-        try {
-            const username = "testuser";
-            const password = "password";
-            const email = "test@example.com";
-            const type = "user";
+    static async testAddUser() {
+        const username = "testuser";
+        const password = "password";
+        const email = "test@example.com";
+        const type = "user";
 
+        return new Promise((resolve) => {
             UserService.addUserQuery(username, password, email, type, (err, result) => {
                 if (err) {
-                    console.error("Error adding user:", err.message);
+                    resolve(false);
                     return;
                 }
 
-                console.log("User added:", result);
-
                 UserService.getUserQuery(result.userId, (err, user) => {
-                    if (err) {
-                        console.error("Error fetching user:", err.message);
-                        return;
-                    }
-
-                    if (user.username === username && user.email === email && user.type === type) {
-                        console.log("User exists:", true);
+                    if (err || !user || user.username !== username || user.email !== email || user.type !== type) {
+                        resolve(false);
                     } else {
-                        console.log("User exists:", false);
+                        resolve(true);
                     }
                 });
             });
+        });
+    }
 
-        } catch (error) {
-            console.error("Error running tests:", error);
-        }
+    static async testAddAndRemoveUser() {
+        const username = "testuser";
+        const password = "password";
+        const email = "test@example.com";
+        const type = "user";
+
+        return new Promise((resolve) => {
+            UserService.addUserQuery(username, password, email, type, (err, result) => {
+                if (err) {
+                    resolve(false);
+                    return;
+                }
+
+                UserService.getUserQuery(result.userId, (err, user) => {
+                    if (err || !user || user.username !== username || user.email !== email || user.type !== type) {
+                        resolve(false);
+                        return;
+                    }
+
+                    UserService.deleteUserQuery(result.userId, (err) => {
+                        if (err) {
+                            resolve(false);
+                            return;
+                        }
+
+                        UserService.getUserQuery(result.userId, (err, user) => {
+                            if (err || user) {
+                                resolve(false);
+                            } else {
+                                resolve(true);
+                            }
+                        });
+                    });
+                });
+            });
+        });
     }
 }
 
-Tests.runTests();
+async function runTests() {
+    const addUserResult = await Tests.testAddUser();
+    console.log("Wynik testu AddUser:", addUserResult);
+
+    const addAndRemoveUserResult = await Tests.testAddAndRemoveUser();
+    console.log("Wynik testu AddAndRemoveUser:", addAndRemoveUserResult);
+}
+
+runTests();
