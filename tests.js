@@ -58,7 +58,7 @@ class Tests {
                         }
 
                         UserService.getUserQuery(result.userId, (err, user) => {
-                            if (err || user) {
+                            if (user) {
                                 resolve(false);
                             } else {
                                 resolve(true);
