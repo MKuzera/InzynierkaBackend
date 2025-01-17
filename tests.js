@@ -1,3 +1,6 @@
+require('dotenv').config();
+const UserService = require('./services/UserService');
+
 class Tests {
     static async testAddUser() {
         const username = "testuser_add";
