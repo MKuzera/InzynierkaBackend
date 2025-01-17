@@ -6,39 +6,18 @@ class ConferenceService {
         return title && description && location && price && date;
     }
 
-    static getAllConferencesQuery() {
-        return 'SELECT * FROM conferences';
-    }
-
-    static addConferenceQuery() {
-        return 'INSERT INTO conferences (title, description, location, organizers, tags, price, date, link, organizerID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    }
-
-    static getAllConferencesForCreatorQuery() {
-        return 'SELECT * FROM conferences WHERE organizerID = ?';
-    }
-
-    static editConferenceQuery() {
-        return 'UPDATE conferences SET title = ?, description = ?, location = ?, organizers = ?, tags = ?, price = ?, date = ?, link = ?, organizerID = ? WHERE id = ?';
-    }
-
-    static deleteConferenceQuery() {
-        return 'DELETE FROM conferences WHERE id = ?';
-    }
-
-    static getConferenceQuery() {
-        return 'SELECT * FROM conferences WHERE id = ?';
-    }
-
-    static async getAllConferences(req, res) {
+    static addConferenceQuery(title, description, location, organizers, tags, price, date, link, organizerID) {
         const db = dbService.getConnection();
-        const query = this.getAllConferencesQuery();
+        const query = 'INSERT INTO conferences (title, description, location, organizers, tags, price, date, link, organizerID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-        db.query(query, (err, results) => {
-            if (err) {
-                return res.status(500).json({ message: 'Error fetching conferences' });
-            }
-            res.json(results);
+        return new Promise((resolve, reject) => {
+            db.query(query, [title, description, location, organizers, tags, price, date, link, organizerID], (err, results) => {
+                if (err) {
+                    reject('Error adding conference');
+                } else {
+                    resolve(results);
+                }
+            });
         });
     }
 
@@ -49,21 +28,30 @@ class ConferenceService {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
-        const db = dbService.getConnection();
-        const query = this.addConferenceQuery();
-
-        db.query(query, [title, description, location, organizers, tags, price, date, link, organizerID], (err, results) => {
-            if (err) {
-                return res.status(500).json({ message: 'Error adding conference' });
-            }
+        try {
+            const results = await this.addConferenceQuery(title, description, location, organizers, tags, price, date, link, organizerID);
             res.status(201).json({ message: 'Conference added successfully', conferenceId: results.insertId });
+        } catch (error) {
+            res.status(500).json({ message: error });
+        }
+    }
+
+    static async getAllConferences(req, res) {
+        const db = dbService.getConnection();
+        const query = 'SELECT * FROM conferences';
+
+        db.query(query, (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: 'Error fetching conferences' });
+            }
+            res.json(results);
         });
     }
 
     static async getAllConferencesForCreator(req, res) {
         const authorId = req.params.authorId;
         const db = dbService.getConnection();
-        const query = this.getAllConferencesForCreatorQuery();
+        const query = 'SELECT * FROM conferences WHERE organizerID = ?';
 
         db.query(query, [authorId], (err, results) => {
             if (err) {
@@ -82,7 +70,7 @@ class ConferenceService {
         }
 
         const db = dbService.getConnection();
-        const query = this.editConferenceQuery();
+        const query = 'UPDATE conferences SET title = ?, description = ?, location = ?, organizers = ?, tags = ?, price = ?, date = ?, link = ?, organizerID = ? WHERE id = ?';
 
         db.query(query, [title, description, location, organizers, tags, price, date, link, organizerID, conferenceId], (err, results) => {
             if (err) {
@@ -98,7 +86,7 @@ class ConferenceService {
     static async deleteConference(req, res) {
         const conferenceId = req.params.id;
         const db = dbService.getConnection();
-        const query = this.deleteConferenceQuery();
+        const query = 'DELETE FROM conferences WHERE id = ?';
 
         db.query(query, [conferenceId], (err, results) => {
             if (err) {
@@ -114,7 +102,7 @@ class ConferenceService {
     static async getConference(req, res) {
         const conferenceId = req.params.id;
         const db = dbService.getConnection();
-        const query = this.getConferenceQuery();
+        const query = 'SELECT * FROM conferences WHERE id = ?';
 
         db.query(query, [conferenceId], (err, results) => {
             if (err) {
