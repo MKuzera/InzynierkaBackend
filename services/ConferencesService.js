@@ -38,7 +38,10 @@ class ConferenceService {
         const query = 'SELECT * FROM conferences WHERE id = ?';
 
         db.query(query, [conferenceId], (err, results) => {
-            callback(err, results);
+            if (err) {
+                return callback(err, null);
+            }
+            callback(null, results);
         });
     }
 
