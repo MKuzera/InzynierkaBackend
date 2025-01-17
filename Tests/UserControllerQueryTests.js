@@ -2,16 +2,21 @@ const UserService = require('../services/UserService');
 
 class UserController {
     static addUserTest() {
-        UserService.addUserQuery("TEST", "TEST", "TEST", "user", (err, result) => {
-            if (err) {
-                return false;
-            }
-            UserService.getAllUsersQuery((err, users) => {
+        return new Promise((resolve, reject) => {
+            UserService.addUserQuery("TEST", "TEST", "TEST", "user", (err, result) => {
                 if (err) {
-                    return false;
+                    return reject(false); // Jeśli wystąpił błąd, odrzuć promise
                 }
-                const userExists = users.some(user => user.username === "TEST" && user.email === "TEST");
-                return userExists;
+
+                // Teraz sprawdzamy, czy użytkownik został dodany
+                UserService.getAllUsersQuery((err, users) => {
+                    if (err) {
+                        return reject(false); // Jeśli wystąpił błąd, odrzuć promise
+                    }
+
+                    const userExists = users.some(user => user.username === "TEST" && user.email === "TEST");
+                    resolve(userExists); // Jeśli użytkownik został znaleziony, rozwiąż promise z wartością true/false
+                });
             });
         });
     }
