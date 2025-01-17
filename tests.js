@@ -69,6 +69,39 @@ class Tests {
             });
         });
     }
+
+    static async testEditUser() {
+        const username = "testuser_edit";
+        const password = "password";
+        const email = "test@example.com";
+        const type = "user";
+        const newUsername = "testuser_edit_changed";
+
+        return new Promise((resolve) => {
+            UserService.addUserQuery(username, password, email, type, (err, result) => {
+                if (err) {
+                    resolve(false);
+                    return;
+                }
+
+                // Update username
+                UserService.updateUserQuery(result.userId, { username: newUsername }, (err, updatedUser) => {
+                    if (err || !updatedUser || updatedUser.username !== newUsername) {
+                        resolve(false);
+                        return;
+                    }
+
+                    UserService.deleteUserQuery(result.userId, (err) => {
+                        if (err) {
+                            resolve(false);
+                        } else {
+                            resolve(true);
+                        }
+                    });
+                });
+            });
+        });
+    }
 }
 
 async function runTests() {
@@ -77,6 +110,9 @@ async function runTests() {
 
     const addAndRemoveUserResult = await Tests.testAddAndRemoveUser();
     console.log("Wynik testu AddAndRemoveUser:", addAndRemoveUserResult);
+
+    const editUserResult = await Tests.testEditUser();
+    console.log("Wynik testu EditUser:", editUserResult);
 }
 
 runTests();
