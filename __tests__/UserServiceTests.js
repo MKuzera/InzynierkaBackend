@@ -16,12 +16,15 @@ describe('UserService.validateUserType', () => {
 
 describe('UserService.getAllUsers', () => {
     let dbStub;
+    let connectionStub;
 
     beforeEach(() => {
-        // Create a mock for `getConnection` and `query` methods
-        dbStub = sinon.stub(DatabaseService.prototype, 'getConnection').returns({
+        // Mock the DatabaseService constructor
+        connectionStub = {
             query: sinon.stub(),
-        });
+            end: sinon.stub(),
+        };
+        dbStub = sinon.stub(DatabaseService.prototype, 'getConnection').returns(connectionStub);
     });
 
     afterEach(() => {
@@ -40,7 +43,7 @@ describe('UserService.getAllUsers', () => {
         };
 
         // Simulate a successful database query
-        dbStub().query.callsFake((query, callback) => {
+        connectionStub.query.callsFake((query, callback) => {
             expect(query).toEqual('SELECT * FROM users');
             callback(null, mockUsers);  // Simulating database response
         });
@@ -60,7 +63,7 @@ describe('UserService.getAllUsers', () => {
         };
 
         // Simulate a database error
-        dbStub().query.callsFake((query, callback) => {
+        connectionStub.query.callsFake((query, callback) => {
             callback(new Error('Database error'));
         });
 
